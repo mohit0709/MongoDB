@@ -1,31 +1,29 @@
-// // const {MongoClient} = require('mongodb'); //here we imported MongoClient from mongodb package, it helps in forming connection & database actions
-// // const url = 'mongodb://localhost:27017';
-// // const client = new MongoClient(url);
+const express = require('express');
+const app = express();
+const {connectToDatabase} = require('./database');
 
+app.get('/user', async (req,res) => {
+    
+    try{
+        const db = await connectToDatabase();
+        const collection = db.collection('example2');
+        const dataset = await collection.find().toArray();
+        res.json(dataset);
+    }
 
-// // async function main(){
-// //     await client.connect();
-// //     console.log('Connected successfully to server');
-// // }
+    catch(error){
+        console.log(error);
+        res.status(500).json({error:'Inter server failure!'});
+    }
+})
 
-// // main();
+//posting data 
 
-// // ****************************************The above code only for connecting mongodb and node************************************************
+app.post('/user', async (req,res) => {
+    const db = await connectToDatabase();
+    const collection = db.collection('example2');
+    const result = collection.insertOne({name:"Arada Guller",age:20});
+    res.json(result);
+})
 
-// const {MongoClient} = require('mongodb'); //here we imported MongoClient from mongodb package, it helps in forming connection & database actions
-// const url = 'mongodb://localhost:27017';
-// const client = new MongoClient(url);
-// const dbName = 'myDatabase';
-
-
-// async function main(){
-//     await client.connect();
-//     console.log('Connected successfully to server');
-//     const db = client.db(dbName);
-//     const collection = db.collection('example1');
-//     const findResult = await collection.find().toArray();
-//     console.log(findResult);
-// }
-
-// main();
-
+app.listen(4000);
